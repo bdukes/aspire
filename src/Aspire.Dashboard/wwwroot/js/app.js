@@ -177,7 +177,7 @@ function isInputElement(element, isRoot, isShadowRoot) {
     return false;
 }
 
-window.registerGlobalKeydownListener = function(shortcutManager) {
+window.registerGlobalKeydownListener = function (shortcutManager) {
     function hasNoModifiers(keyboardEvent) {
         return !keyboardEvent.altKey && !keyboardEvent.ctrlKey && !keyboardEvent.metaKey && !keyboardEvent.shiftKey;
     }
@@ -248,24 +248,24 @@ window.registerGlobalKeydownListener = function(shortcutManager) {
     return {
         keydownListener: keydownListener,
     }
-}
+};
 
 window.unregisterGlobalKeydownListener = function (keydownListener) {
     window.document.removeEventListener('keydown', keydownListener);
-}
+};
 
 window.getBrowserTimeZone = function () {
     const options = Intl.DateTimeFormat().resolvedOptions();
 
     return options.timeZone;
-}
+};
 
-window.focusElement = function(selector) {
+window.focusElement = function (selector) {
     const element = document.getElementById(selector);
     if (element) {
         element.focus();
     }
-}
+};
 
 window.getWindowDimensions = function() {
     return {

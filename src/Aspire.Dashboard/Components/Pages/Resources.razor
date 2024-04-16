@@ -15,7 +15,7 @@
 }
 
 <div class="page-content-container">
-    <AspirePageContentLayout IsSummaryDetailsViewOpen="@showDetailsView">
+    <AspirePageContentLayout IsSummaryDetailsViewOpen="@showDetailsView" @ref="_contentLayout">
         <PageTitleSection>
             <h1 class="page-header">@Loc[nameof(Dashboard.Resources.Resources.ResourcesHeader)]</h1>
         </PageTitleSection>
@@ -71,6 +71,13 @@
                                 SelectedValue="@SelectedResource"
                                 ViewKey="ResourcesList">
                 <Summary>
+            <div class="resources-summary-layout">
+            <FluentTabs Class="resource-tabs" ActiveTabId="@($"tab-{PageViewModel.SelectedViewKind ?? ResourceViewKind.Table}")" OnTabChange="@OnTabChangeAsync">
+                <FluentTab LabelClass="tab-label"
+                           Id="@($"tab-{ResourceViewKind.Table}")"
+                           Label="@ControlsStringsLoc[nameof(ControlsStrings.ChartContainerTableTab)]"
+                           Icon="@(new Icons.Regular.Size24.Table())">
+                    <div class="resources-grid-container">
                     @{
                     var gridTemplateColumns = HasResourcesWithCommands ? "1fr 1.5fr 1.25fr 1.5fr 2.5fr 2.5fr 1fr 1fr 1fr" : "1fr 1.5fr 1.25fr 1.5fr 2.5fr 2.5fr 1fr 1fr";
                     }
@@ -123,6 +130,20 @@
                             <FluentIcon Icon="Icons.Regular.Size24.AppGeneric" />&nbsp;@Loc[nameof(Dashboard.Resources.Resources.ResourcesNoResources)]
                         </EmptyContent>
                     </FluentDataGrid>
+                    </div>
+                </FluentTab>
+                <FluentTab LabelClass="tab-label"
+                           Id="@($"tab-{ResourceViewKind.Graph}")"
+                           aria-label="@ControlsStringsLoc[nameof(ControlsStrings.ChartContainerGraphAccessibleLabel)]"
+                           Label="@ControlsStringsLoc[nameof(ControlsStrings.ChartContainerGraphTab)]"
+                           Icon="@(new Icons.Regular.Size24.ShareAndroid())">
+                    <div class="resource-graph-container">
+                        <svg class="resource-graph">
+                        </svg>
+                    </div>
+                </FluentTab>
+            </FluentTabs>
+            </div>
                 </Summary>
                 <Details>
                     <ResourceDetails Resource="context" ShowSpecOnlyToggle="true" />

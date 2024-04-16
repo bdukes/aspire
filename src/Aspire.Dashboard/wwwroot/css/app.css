@@ -496,3 +496,20 @@ fluent-data-grid-cell.no-ellipsis {
     height: 100%;
     overflow: auto;
 }
+
+.resource-tabs{
+    grid-area: main;
+}
+
+.resource-tabs fluent-tab:first-child {
+    margin-left: calc(var(--design-unit) * 2px);
+}
+
+.resource-graph .texts {
+    cursor: pointer;
+}
+
+.resource-graph .nodes {
+    cursor: pointer;
+}
+
