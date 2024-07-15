@@ -31,7 +31,7 @@ public partial class StateColumnDisplay
                 return new StateIconInfo
                 {
                     Tooltip = string.Format(CultureInfo.InvariantCulture, loc[Columns.StateColumnResourceExited], resource.ResourceType),
-                    Icon = new Icons.Filled.Size16.ErrorCircle(),
+                    Icon = new Icons.Regular.Size16.CheckmarkUnderlineCircle(),
                     Color = Color.Success,
                 };
             }
