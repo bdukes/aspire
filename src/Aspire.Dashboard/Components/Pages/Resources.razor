@@ -75,7 +75,7 @@
                                 Tab content isn't nested inside FluentTab elements. The tab control is just used to display the tabs.
                                 Content is located in manually created divs so they can be placed in their own CSS grid row.
                             *@
-                            <FluentTabs Class="resouces-tab-header" ActiveTabId="@($"tab-{PageViewModel.SelectedViewKind}")" OnTabChange="@OnTabChangeAsync">
+                            <FluentTabs Class="resources-tab-header" ActiveTabId="@($"tab-{PageViewModel.SelectedViewKind}")" OnTabChange="@OnTabChangeAsync">
                                 <FluentTab LabelClass="tab-label"
                                            Id="@($"tab-{ResourceViewKind.Table}")"
                                            Label="@ControlsStringsLoc[nameof(ControlsStrings.ChartContainerTableTab)]"

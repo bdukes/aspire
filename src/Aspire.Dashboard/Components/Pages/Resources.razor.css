@@ -47,8 +47,8 @@
     grid-area: main;
     display: grid;
     grid-template-areas:
-        "resouces-tab-header"
-        "resouces-tab-content";
+        "resources-tab-header"
+        "resources-tab-content";
     grid-template-rows: auto 1fr;
     overflow: hidden;
 }
@@ -62,11 +62,11 @@
     height: 100%;
     width: 100%;
     display: grid;
-    grid-area: resouces-tab-content;
+    grid-area: resources-tab-content;
 }
 
 ::deep .resource-graph-container {
-    grid-area: resouces-tab-content;
+    grid-area: resources-tab-content;
 }
 
 ::deep .resource-graph .texts {
