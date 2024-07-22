@@ -157,7 +157,7 @@ public partial class Resources : ComponentBase, IAsyncDisposable, IPageWithSessi
     {
         PageViewModel = new ResourcesViewModel
         {
-            SelectedViewKind = null
+            SelectedViewKind = ResourceViewKind.Table
         };
 
         _applicationUnviewedErrorCounts = TelemetryRepository.GetApplicationUnviewedErrorLogsCount();
@@ -596,7 +596,7 @@ public partial class Resources : ComponentBase, IAsyncDisposable, IPageWithSessi
 
     public sealed class ResourcesViewModel
     {
-        public required ResourceViewKind? SelectedViewKind { get; set; }
+        public required ResourceViewKind SelectedViewKind { get; set; }
     }
 
     public class ResourcesPageState
@@ -622,7 +622,10 @@ public partial class Resources : ComponentBase, IAsyncDisposable, IPageWithSessi
 
     public void UpdateViewModelFromQuery(ResourcesViewModel viewModel)
     {
-        viewModel.SelectedViewKind = Enum.TryParse(typeof(ResourceViewKind), ViewKindName, out var view) && view is ResourceViewKind vk ? vk : null;
+        if (Enum.TryParse(typeof(ResourceViewKind), ViewKindName, out var view) && view is ResourceViewKind vk)
+        {
+            viewModel.SelectedViewKind = vk;
+        }
     }
 
     public string GetUrlFromSerializableViewModel(ResourcesPageState serializable)
@@ -634,7 +637,7 @@ public partial class Resources : ComponentBase, IAsyncDisposable, IPageWithSessi
     {
         return new ResourcesPageState
         {
-            ViewKind = PageViewModel.SelectedViewKind?.ToString()
+            ViewKind = (PageViewModel.SelectedViewKind != ResourceViewKind.Table) ? PageViewModel.SelectedViewKind.ToString() : null
         };
     }
 }

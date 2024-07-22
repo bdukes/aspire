@@ -43,11 +43,38 @@
         "foot";
 }
 
+::deep .resource-tabs {
+    grid-area: main;
+    display: grid;
+    grid-template-areas:
+        "resouces-tab-header"
+        "resouces-tab-content";
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+}
+
+::deep .resource-tabs fluent-tab:first-child {
+    margin-left: calc(var(--design-unit) * 2px);
+}
+
 ::deep .resources-grid-container {
     overflow: auto;
     height: 100%;
     width: 100%;
     display: grid;
+    grid-area: resouces-tab-content;
+}
+
+::deep .resource-graph-container {
+    grid-area: resouces-tab-content;
+}
+
+::deep .resource-graph .texts {
+    cursor: pointer;
+}
+
+::deep .resource-graph .nodes {
+    cursor: pointer;
 }
 
 ::deep .resource-name {
