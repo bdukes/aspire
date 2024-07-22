@@ -7,9 +7,10 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Xml.Linq;
+using Aspire.Dashboard.Components.Layout;
+using Aspire.Dashboard.Components.Resize;
 using Aspire.Dashboard.Components.ResourcesGridColumns;
 using Aspire.Dashboard.Extensions;
-using Aspire.Dashboard.Components.Resize;
 using Aspire.Dashboard.Model;
 using Aspire.Dashboard.Otlp.Model;
 using Aspire.Dashboard.Otlp.Storage;
@@ -20,7 +21,6 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components.Extensions;
 using Microsoft.JSInterop;
-using Aspire.Dashboard.Components.Layout;
 
 namespace Aspire.Dashboard.Components.Pages;
 
@@ -73,6 +73,7 @@ public partial class Resources : ComponentBase, IAsyncDisposable, IPageWithSessi
     private bool _isLoading = true;
     private string? _elementIdBeforeDetailsViewOpened;
     private DotNetObjectReference<ResourcesInterop>? _resourcesInteropReference;
+    private IJSObjectReference? _jsModule;
     private AspirePageContentLayout? _contentLayout;
 
     private bool Filter(ResourceViewModel resource) => _visibleResourceTypes.ContainsKey(resource.ResourceType) && (_filter.Length == 0 || resource.MatchesFilter(_filter)) && !resource.IsHiddenState();
@@ -232,11 +233,13 @@ public partial class Resources : ComponentBase, IAsyncDisposable, IPageWithSessi
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (PageViewModel.SelectedViewKind == ResourceViewKind.Graph && _jsModule == null)
         {
+            _jsModule = await JS.InvokeAsync<IJSObjectReference>("import", "/js/app-resourcegraph.js");
+
             _resourcesInteropReference = DotNetObjectReference.Create(new ResourcesInterop(this));
 
-            await JS.InvokeVoidAsync("initializeResourcesGraph", _resourcesInteropReference);
+            await _jsModule.InvokeVoidAsync("initializeResourcesGraph", _resourcesInteropReference);
             await UpdateResourceGraphResourcesAsync();
         }
     }
@@ -248,7 +251,7 @@ public partial class Resources : ComponentBase, IAsyncDisposable, IPageWithSessi
 
     private async Task UpdateResourceGraphResourcesAsync()
     {
-        if (PageViewModel.SelectedViewKind != ResourceViewKind.Graph)
+        if (PageViewModel.SelectedViewKind != ResourceViewKind.Graph || _jsModule == null)
         {
             return;
         }
@@ -260,7 +263,7 @@ public partial class Resources : ComponentBase, IAsyncDisposable, IPageWithSessi
 
         var activeResources = _resourceByName.Values.Where(Filter).OrderBy(e => e.ResourceType).ThenBy(e => e.Name).ToList();
         var resources = activeResources.Select(MapDto).ToList();
-        await JS.InvokeVoidAsync("updateResourcesGraph", resources);
+        await _jsModule.InvokeVoidAsync("updateResourcesGraph", resources);
 
         ResourceDto MapDto(ResourceViewModel r)
         {
@@ -591,7 +594,10 @@ public partial class Resources : ComponentBase, IAsyncDisposable, IPageWithSessi
 
     private async Task UpdateResourceGraphSelectedAsync()
     {
-        await JS.InvokeVoidAsync("updateResourcesGraphSelected", SelectedResource?.Name);
+        if (_jsModule != null)
+        {
+            await _jsModule.InvokeVoidAsync("updateResourcesGraphSelected", SelectedResource?.Name);
+        }
     }
 
     public sealed class ResourcesViewModel
@@ -616,6 +622,8 @@ public partial class Resources : ComponentBase, IAsyncDisposable, IPageWithSessi
         _watchTaskCancellationTokenSource.Cancel();
         _watchTaskCancellationTokenSource.Dispose();
         _logsSubscription?.Dispose();
+
+        await JSInteropHelpers.SafeDisposeAsync(_jsModule);
 
         await TaskHelpers.WaitIgnoreCancelAsync(_resourceSubscriptionTask);
     }

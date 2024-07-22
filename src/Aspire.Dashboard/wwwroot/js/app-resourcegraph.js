@@ -1,6 +1,8 @@
+import './d3.v7.js'
+
 let resourceGraph = null;
 
-window.initializeResourcesGraph = function (resourcesInterop) {
+export function initializeResourcesGraph(resourcesInterop) {
     resourceGraph = new ResourceGraph(resourcesInterop);
     resourceGraph.resize();
 
@@ -11,15 +13,15 @@ window.initializeResourcesGraph = function (resourcesInterop) {
     for (const child of document.getElementsByClassName('resources-summary-layout')) {
         observer.observe(child);
     }
-};
+}
 
-window.updateResourcesGraph = function (resources) {
+export function updateResourcesGraph(resources) {
     if (resourceGraph) {
         resourceGraph.updateResources(resources);
     }
-};
+}
 
-window.updateResourcesGraphSelected = function (resourceName) {
+export function updateResourcesGraphSelected(resourceName) {
     if (resourceGraph) {
         resourceGraph.switchTo(resourceName);
     }
