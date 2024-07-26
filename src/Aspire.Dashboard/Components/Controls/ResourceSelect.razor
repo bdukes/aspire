@@ -6,6 +6,7 @@
               OptionDisabled="@(c => c!.Id?.Type is Otlp.Model.OtlpApplicationType.ReplicaSet)"
               SelectedOption="SelectedResource"
               SelectedOptionChanged="SelectedResourceChanged"
+              ValueChanged="ValuedChanged"
               AriaLabel="@AriaLabel"
               Class="resource-list"
               Height="@GetPopupHeight()">
